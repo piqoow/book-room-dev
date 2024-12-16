@@ -283,11 +283,62 @@ table tr:hover {
 .status.pending {
     background-color: #f39c12;
 }
+
 .status.cancelled {
     background-color: hsl(9, 95%, 50%);
 }
 
+/* Media Queries for Responsiveness */
 
+/* Tablet (max-width: 768px) */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
+    header .logo {
+        margin-bottom: 10px;
+        font-size: 1.2em;
+    }
 
+    header nav ul {
+        flex-direction: column;
+        width: 100%;
+    }
 
+    header nav ul li {
+        margin: 5px 0;
+    }
+
+    .main-container {
+        padding: 10px;
+    }
+
+    table th, table td {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+}
+
+/* Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    header {
+        padding: 10px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    table th, table td {
+        font-size: 0.8em;
+    }
+
+    .main-container h1 {
+        font-size: 1.5em;
+    }
+}

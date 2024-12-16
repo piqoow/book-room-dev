@@ -138,7 +138,7 @@ $result = $conn->query($sql);
             e.preventDefault();
             const formData = $(this).serialize();
             $.ajax({
-                url: 'update_status.php',
+                url: 'Update_status.php',
                 type: 'POST',
                 data: formData,
                 success: function (response) {

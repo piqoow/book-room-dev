@@ -96,7 +96,7 @@ $result = $conn->query($sql);
                         <option value="pending">Pending</option>
                         <option value="cancelled">Cancelled</option>
                     </select>
-                    <button class="status" data-booking-id="<?php echo $booking['id']; ?>" onclick="showModal(this)">Update Status</button>
+                    <button type="submit">Update Status</button>
                 </form>
             </div>
         </div>

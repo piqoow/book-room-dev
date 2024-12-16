@@ -1,50 +1,34 @@
 <?php
-session_start(); // Memulai session
+session_start();
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['user_name'])) {
-    header("Location: login.php"); // Arahkan ke halaman login jika belum login
+    header("Location: login.php");
     exit();
 }
 
 // Ambil username dan role dari session
 $username = $_SESSION['user_name'];
-$role = $_SESSION['role']; // Ambil role dari sesi
+$role = $_SESSION['role'] ?? 'user';
 
 // Koneksi ke database
-include 'config.php'; // Pastikan file config.php sudah berisi konfigurasi koneksi database
+include 'config.php';
 
-// Fungsi untuk mengambil data booking
-function getBookings($conn, $role, $username) {
-    if ($role == 'admin' || $role == 'view') {
-        $sql = "SELECT bookings.id, rooms.name as room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.status 
-                FROM bookings 
-                JOIN rooms ON bookings.room_id = rooms.id 
-                WHERE bookings.date >= CURDATE()";
-    } else {
-        $sql = "SELECT bookings.id, rooms.name as room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.status 
-                FROM bookings 
-                JOIN rooms ON bookings.room_id = rooms.id 
-                WHERE bookings.date >= CURDATE() AND bookings.user_id = (SELECT id FROM users WHERE user_name = '$username')";
-    }
-
-    $result = $conn->query($sql);
-    $data = [];
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
-        }
-    }
-    return $data;
+// Query untuk mengambil daftar pemesanan berdasarkan role
+if ($role == 'admin' || $role == 'view') {
+    $sql = "SELECT bookings.id, rooms.name AS room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.status 
+            FROM bookings 
+            JOIN rooms ON bookings.room_id = rooms.id 
+            WHERE bookings.date >= CURDATE()";
+} else {
+    // Jika role user, hanya tampilkan data milik pengguna tersebut
+    $sql = "SELECT bookings.id, rooms.name AS room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.status 
+            FROM bookings 
+            JOIN rooms ON bookings.room_id = rooms.id 
+            WHERE bookings.date >= CURDATE() AND bookings.user_id = (SELECT id FROM users WHERE user_name = '$username')";
 }
 
-// Endpoint untuk AJAX
-if (isset($_GET['fetch_bookings'])) {
-    header('Content-Type: application/json');
-    $bookings = getBookings($conn, $role, $username);
-    echo json_encode($bookings);
-    exit();
-}
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -55,9 +39,7 @@ if (isset($_GET['fetch_bookings'])) {
     <title>Meeting Room Dashboard</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* Tambahkan gaya tambahan jika diperlukan */
-    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <!-- Header -->
@@ -88,60 +70,130 @@ if (isset($_GET['fetch_bookings'])) {
                         <th>#</th>
                         <th>Room Name</th>
                         <th>Date</th>
-                        <th>Divisi</th>
+                        <th>Division</th>
                         <th>Time</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody id="bookingTable">
-                    <!-- Data akan dimuat melalui AJAX -->
+                    <!-- Isi tabel akan dimuat melalui AJAX -->
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- Modal for Updating Status -->
+    <?php if ($role == 'admin') { ?>
+        <div id="statusModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Update Status</h2>
+                <form id="updateStatusForm">
+                    <input type="hidden" id="booking_id" name="booking_id">
+                    <label for="status">Choose Status:</label>
+                    <select name="status" id="status">
+                        <option value="confirmed">Confirmed</option>
+                        <option value="pending">Pending</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <button type="submit">Update Status</button>
+                </form>
+            </div>
+        </div>
+    <?php } ?>
+
     <script>
-        // Function untuk memuat data booking melalui AJAX
-        function loadBookings() {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'dashboard.php?fetch_bookings=1', true);
-            xhr.onload = function () {
-                if (this.status === 200) {
-                    const data = JSON.parse(this.responseText);
-                    const tbody = document.getElementById('bookingTable');
-                    tbody.innerHTML = ''; // Kosongkan tabel sebelum menambahkan data baru
-
-                    if (data.length > 0) {
-                        data.forEach((booking, index) => {
-                            const row = `
-                                <tr>
-                                    <td>${index + 1}</td>
-                                    <td>${booking.room_name}</td>
-                                    <td>${booking.date}</td>
-                                    <td>${booking.divisi}</td>
-                                    <td>${booking.time_start} - ${booking.time_end}</td>
-                                    <td><span class="status ${booking.status}">${capitalize(booking.status)}</span></td>
-                                </tr>`;
-                            tbody.innerHTML += row;
-                        });
-                    } else {
-                        tbody.innerHTML = '<tr><td colspan="6">No bookings found.</td></tr>';
-                    }
+        // Function to fetch bookings
+        function fetchBookings() {
+            $.ajax({
+                url: 'fetch_slots.php',
+                type: 'GET',
+                success: function (response) {
+                    $('#bookingTable').html(response);
+                },
+                error: function () {
+                    alert('Failed to load bookings.');
                 }
-            };
-            xhr.send();
+            });
         }
 
-        // Capitalize function
-        function capitalize(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
+        // Load bookings on page load and refresh every 1 minute
+        fetchBookings();
+        setInterval(fetchBookings, 60000);
+
+        // Function to show the modal
+        function showModal(element) {
+            const bookingId = $(element).data('booking-id');
+            $('#booking_id').val(bookingId);
+            $('#statusModal').fadeIn();
         }
 
-        // Muat data pertama kali saat halaman dibuka
-        loadBookings();
+        // Function to close the modal
+        function closeModal() {
+            $('#statusModal').fadeOut();
+        }
 
-        // Refresh data setiap 1 menit (60000 ms)
-        setInterval(loadBookings, 60000);
+        // Handle status update form submission
+        $('#updateStatusForm').on('submit', function (e) {
+            e.preventDefault();
+            const formData = $(this).serialize();
+            $.ajax({
+                url: 'update_status.php',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    alert(response);
+                    fetchBookings(); // Refresh booking list
+                    closeModal();
+                },
+                error: function () {
+                    alert('Failed to update status.');
+                }
+            });
+        });
     </script>
+
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .status {
+            cursor: pointer;
+        }
+    </style>
 </body>
 </html>

@@ -20,6 +20,16 @@ if ($result->num_rows > 0) {
     }
 }
 
+// Fetch available division
+$division = [];
+$sql = "SELECT * FROM division";
+$result = $conn->query($sql);
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $division[] = $row;
+    }
+}
+
 // Function to generate time slots
 function generateTimeSlots($start, $end, $interval) {
     $times = [];
@@ -130,8 +140,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
                 <input type="hidden" name="room_id" value="<?php echo htmlspecialchars($_POST['room_id']); ?>">
                 <input type="hidden" name="date" value="<?php echo htmlspecialchars($_POST['date']); ?>">
 
+                <!-- <label for="divisi">Division:</label>
+                <input type="text" name="divisi" required> -->
+
                 <label for="divisi">Division:</label>
-                <input type="text" name="divisi" required>
+                <select name="divisi" required>
+                    <option value="">--Select Division--</option>
+                    <?php foreach ($division as $divisi): ?>
+                        <option value="<?php echo $divisi['id']; ?>"><?php echo htmlspecialchars($divisi['name']); ?></option>
+                    <?php endforeach; ?>
+                </select>
 
                 <label for="start_time">Start Time:</label>
                 <select name="start_time" required>
@@ -181,8 +199,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
                 <input type="hidden" name="room_id" value="<?php echo htmlspecialchars($_POST['room_id']); ?>">
                 <input type="hidden" name="date" value="<?php echo htmlspecialchars($_POST['date']); ?>">
 
+                <!-- <label for="divisi">Division:</label>
+                <input type="text" name="divisi" required> -->
+
+                
                 <label for="divisi">Division:</label>
-                <input type="text" name="divisi" required>
+                <select name="divisi" required>
+                    <option value="">--Select Division--</option>
+                    <?php foreach ($division as $divisi): ?>
+                        <option value="<?php echo $divisi['name']; ?>"><?php echo htmlspecialchars($divisi['name']); ?></option>
+                    <?php endforeach; ?>
+                </select>
 
                 <label for="start_time">Start Time:</label>
                 <select name="start_time" required>

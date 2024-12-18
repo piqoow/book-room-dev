@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
                 <select name="divisi" required>
                     <option value="">--Select Division--</option>
                     <?php foreach ($division as $divisi): ?>
-                        <option value="<?php echo $divisi['id']; ?>"><?php echo htmlspecialchars($divisi['name']); ?></option>
+                        <option value="<?php echo $divisi['name']; ?>"><?php echo htmlspecialchars($divisi['name']); ?></option>
                     <?php endforeach; ?>
                 </select>
 

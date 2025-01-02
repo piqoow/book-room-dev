@@ -17,6 +17,7 @@ $start_time = $_POST['start_time'] ?? '';
 $end_time = $_POST['end_time'] ?? '';
 $divisi = $_POST['divisi'] ?? '';
 $user_name = $_SESSION['user_name'] ?? '';
+$division = $_SESSION['division'] ?? '';
 
 // Sanitasi input
 $room_id = $conn->real_escape_string($room_id);
@@ -26,7 +27,7 @@ $end_time = $conn->real_escape_string($end_time);
 $divisi = $conn->real_escape_string($divisi);
 
 // Validasi input
-if (!$room_id || !$date || !$start_time || !$end_time || !$divisi) {
+if (!$room_id || !$date || !$start_time || !$end_time) {
     header("Location: book.php?status=error&message=" . urlencode('Please fill out all fields.'));
     exit();
 }
@@ -53,14 +54,15 @@ if ($result_check->num_rows > 0) {
 }
 
 // Ambil user_id dari database
-$sql_user = "SELECT id FROM users WHERE user_name = '$user_name'";
+$sql_user = "SELECT id, division FROM users WHERE user_name = '$user_name'";
 $result_user = $conn->query($sql_user);
 $user = $result_user->fetch_assoc();
 $user_id = $user['id'];
+$division_id = $user['division'];
 
 // Jika validasi berhasil, simpan data booking ke database
-$sql_insert = "INSERT INTO bookings (room_id, user_id, date, divisi, time_start, time_end) 
-               VALUES ('$room_id', '$user_id', '$date', '$divisi', '$start_time', '$end_time')";
+$sql_insert = "INSERT INTO bookings (room_id, user_id, date, divisi, time_start, time_end, created_at) 
+               VALUES ('$room_id', '$user_id', '$date', '$division', '$start_time', '$end_time', now())";
 
 if ($conn->query($sql_insert) === TRUE) {
     header("Location: book.php?status=success&message=" . urlencode('Your booking has been successfully made.'));

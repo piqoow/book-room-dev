@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_name'])) {
 
 // Ambil username dan role dari session
 $username = $_SESSION['user_name'];
+// $division = $_SESSION['division'];
 $role = $_SESSION['role'] ?? 'user';
 
 // Koneksi ke database
@@ -57,7 +58,6 @@ $result = $conn->query($sql);
             </ul>
         </nav>
     </header>
-
     <!-- Main Content -->
     <div class="main-container">
         <h1>Welcome, <span><?php echo htmlspecialchars($username); ?></span></h1>
@@ -101,6 +101,14 @@ $result = $conn->query($sql);
             </div>
         </div>
     <?php } ?>
+    <div class="main-container">
+        <p>
+            <strong>*</strong> Untuk konfirmasi pemesanan, silakan hubungi Admin melalui kontak di bawah ini.
+        </p>
+        <p><strong>Anissa <a href="https://wa.me/6282110830527" target="_blank"> (+62 821-1083-0527)</a></strong></p>
+        <p><strong>Laviana <a href="https://wa.me/628179679993" target="_blank"> (+62 817-9679-993)</a></strong></p>
+    </div>
+
 
     <script>
         // Function to fetch bookings

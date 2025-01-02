@@ -2,6 +2,12 @@
 session_start();
 include 'config.php';
 
+// Menjalankan query untuk mengkonfirmasi booking secara otomatis
+$auto_confirm = "UPDATE bookings 
+               SET status = 'Confirmed' 
+               WHERE status = 'Pending' AND TIMESTAMPDIFF(MINUTE, created_at, NOW()) >= 5";
+$conn->query($auto_confirm);
+
 $username = $_SESSION['user_name'];
 $role = $_SESSION['role'] ?? 'user';
 

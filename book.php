@@ -11,12 +11,22 @@ if (!isset($_SESSION['user_name'])) {
 include 'config.php';
 
 // Fetch available rooms
-$rooms = [];
-$sql = "SELECT * FROM rooms";
+$rooms_h = [];
+$sql = "SELECT * FROM rooms where unit = 'H'";
 $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $rooms[] = $row;
+        $rooms_h[] = $row;
+    }
+}
+
+// Fetch available rooms
+$rooms_n = [];
+$sql = "SELECT * FROM rooms where unit = 'N'";
+$result = $conn->query($sql);
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $rooms_n[] = $row;
     }
 }
 
@@ -123,11 +133,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
         <form action="book.php" method="POST">
             <label for="room_id">Select Room:</label>
             <select name="room_id" required>
-                <option value="">--Select a Room--</option>
-                <?php foreach ($rooms as $room): ?>
-                    <option value="<?php echo $room['id']; ?>"><?php echo htmlspecialchars($room['name']); ?></option>
+                <option value="" disabled>--Unit H--</option>
+                <?php foreach ($rooms_h as $room_h): ?>
+                    <option value="<?php echo $room_h['id']; ?>"><?php echo htmlspecialchars($room_h['name']); ?> - <?php echo htmlspecialchars($room_h['pax']); ?> pax</option>
                 <?php endforeach; ?>
-            </select>
+                <option value="" disabled>--Unit N---</option>
+                <?php foreach ($rooms_n as $room_n): ?>
+                    <option value="<?php echo $room_n['id']; ?>"><?php echo htmlspecialchars($room_n['name']); ?> - <?php echo htmlspecialchars($room_n['pax']); ?> pax</option>
+                <?php endforeach; ?>
+            
 
             <label for="date">Date:</label>
             <input type="date" name="date" required value="<?php echo htmlspecialchars($_POST['date'] ?? ''); ?>">
@@ -150,6 +164,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
                         <option value="<?php echo $divisi['name']; ?>"><?php echo htmlspecialchars($divisi['name']); ?></option>
                     <?php endforeach; ?>
                 </select>
+
+                <label for="meet_with">Meet With:</label>
+                <select id="meet_with" name="meet_with" required>
+                    <option value="">--Select Item--</option>
+                    <option value="internal">Internal</option>
+                    <option value="external">External</option>
+                </select>
+
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description" required>
 
                 <label for="start_time">Start Time:</label>
                 <select name="start_time" required>
@@ -203,13 +227,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
                 <input type="text" name="divisi" required> -->
 
                 
-                <label for="divisi">Division:</label>
+                <!-- <label for="divisi">Division:</label>
                 <select name="divisi" required>
                     <option value="">--Select Division--</option>
                     <?php foreach ($division as $divisi): ?>
                         <option value="<?php echo $divisi['name']; ?>"><?php echo htmlspecialchars($divisi['name']); ?></option>
                     <?php endforeach; ?>
+                </select> -->
+
+                <label for="meet_with">Meet With:</label>
+                <select id="meet_with" name="meet_with" required>
+                    <option value="">--Select Item--</option>
+                    <option value="internal">Internal</option>
+                    <option value="external">External</option>
                 </select>
+
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description" required>
 
                 <label for="start_time">Start Time:</label>
                 <select name="start_time" required>

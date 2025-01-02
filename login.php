@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (password_verify($password, $user['password'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['user_name'];
+        $_SESSION['division'] = $user['division'];
         $_SESSION['role'] = $user['role']; // Simpan role ke sesi
         header("Location: dashboard.php");
         exit();

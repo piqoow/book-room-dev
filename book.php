@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
     $date = $conn->real_escape_string($_POST['date']);
 
     // Query untuk mengambil waktu yang sudah dibooking pada ruang dan tanggal yang dipilih
-    $sql_booked = "SELECT time_start, time_end FROM bookings WHERE room_id = '$room_id' AND date = '$date'";
+    $sql_booked = "SELECT time_start, time_end FROM bookings WHERE room_id = '$room_id' AND date = '$date' AND status != 'cancelled'";
     $result_booked = $conn->query($sql_booked);
 
     // Jika ada waktu yang dibooking, simpan dalam array

@@ -6,12 +6,12 @@ $username = $_SESSION['user_name'];
 $role = $_SESSION['role'] ?? 'user';
 
 if ($role == 'admin' || $role == 'view') {
-    $sql = "SELECT bookings.id, rooms.name AS room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.status 
+    $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
             WHERE bookings.date >= CURDATE()";
 } else {
-    $sql = "SELECT bookings.id, rooms.name AS room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.status 
+    $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
             WHERE bookings.date >= CURDATE() AND bookings.user_id = (SELECT id FROM users WHERE user_name = '$username')";

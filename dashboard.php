@@ -72,7 +72,7 @@ $result = $conn->query($sql);
                         <th>Date</th>
                         <th>Division</th>
                         <th>Time</th>
-                        <th>Deskripsi</th>
+                        <th>Description</th>
                         <th>Status</th>
                     </tr>
                 </thead>

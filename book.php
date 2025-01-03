@@ -157,13 +157,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
                 <!-- <label for="divisi">Division:</label>
                 <input type="text" name="divisi" required> -->
 
-                <label for="divisi">Division:</label>
+                <!-- <label for="divisi">Division:</label>
                 <select name="divisi" required>
                     <option value="">--Select Division--</option>
                     <?php foreach ($division as $divisi): ?>
                         <option value="<?php echo $divisi['name']; ?>"><?php echo htmlspecialchars($divisi['name']); ?></option>
                     <?php endforeach; ?>
-                </select>
+                </select> -->
 
                 <label for="meet_with">Meet With:</label>
                 <select id="meet_with" name="meet_with" required>

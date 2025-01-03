@@ -135,12 +135,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
             <select name="room_id" required>
                 <option value="" disabled>--Unit H--</option>
                 <?php foreach ($rooms_h as $room_h): ?>
-                    <option value="<?php echo $room_h['id']; ?>"><?php echo htmlspecialchars($room_h['name']); ?> - <?php echo htmlspecialchars($room_h['pax']); ?> pax</option>
+                    <option value="<?php echo $room_h['id']; ?>" <?php echo (isset($_POST['room_id']) && $_POST['room_id'] == $room_h['id']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($room_h['name']); ?> - <?php echo htmlspecialchars($room_h['pax']); ?> pax
+                    </option>
                 <?php endforeach; ?>
                 <option value="" disabled>--Unit N---</option>
                 <?php foreach ($rooms_n as $room_n): ?>
-                    <option value="<?php echo $room_n['id']; ?>"><?php echo htmlspecialchars($room_n['name']); ?> - <?php echo htmlspecialchars($room_n['pax']); ?> pax</option>
+                    <option value="<?php echo $room_n['id']; ?>" <?php echo (isset($_POST['room_id']) && $_POST['room_id'] == $room_n['id']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($room_n['name']); ?> - <?php echo htmlspecialchars($room_n['pax']); ?> pax
+                    </option>
                 <?php endforeach; ?>
+            </select>
             
 
             <label for="date">Date:</label>

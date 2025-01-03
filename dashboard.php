@@ -17,13 +17,13 @@ include 'config.php';
 
 // Query untuk mengambil daftar pemesanan berdasarkan role
 if ($role == 'admin' || $role == 'view') {
-    $sql = "SELECT bookings.id, rooms.name AS room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.status 
+    $sql = "SELECT bookings.id, rooms.name AS room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
             WHERE bookings.date >= CURDATE()";
 } else {
     // Jika role user, hanya tampilkan data milik pengguna tersebut
-    $sql = "SELECT bookings.id, rooms.name AS room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.status 
+    $sql = "SELECT bookings.id, rooms.name AS room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
             WHERE bookings.date >= CURDATE() AND bookings.user_id = (SELECT id FROM users WHERE user_name = '$username')";
@@ -72,6 +72,7 @@ $result = $conn->query($sql);
                         <th>Date</th>
                         <th>Division</th>
                         <th>Time</th>
+                        <th>Deskripsi</th>
                         <th>Status</th>
                     </tr>
                 </thead>

@@ -13,6 +13,8 @@ include 'config.php';
 // Ambil data dari form
 $room_id = $_POST['room_id'] ?? null;
 $date = $_POST['date'] ?? '';
+$meet_with = $_POST['meet_with'] ?? '';
+$description = $_POST['description'] ?? '';
 $start_time = $_POST['start_time'] ?? '';
 $end_time = $_POST['end_time'] ?? '';
 $divisi = $_POST['divisi'] ?? '';
@@ -24,6 +26,8 @@ $room_id = $conn->real_escape_string($room_id);
 $date = $conn->real_escape_string($date);
 $start_time = $conn->real_escape_string($start_time);
 $end_time = $conn->real_escape_string($end_time);
+$meet_with = $conn->real_escape_string($meet_with);
+$description = $conn->real_escape_string($description);
 $divisi = $conn->real_escape_string($divisi);
 
 // Validasi input
@@ -61,8 +65,8 @@ $user_id = $user['id'];
 $division_id = $user['division'];
 
 // Jika validasi berhasil, simpan data booking ke database
-$sql_insert = "INSERT INTO bookings (room_id, user_id, date, divisi, time_start, time_end, created_at) 
-               VALUES ('$room_id', '$user_id', '$date', '$division', '$start_time', '$end_time', now())";
+$sql_insert = "INSERT INTO bookings (room_id, user_id, date, divisi, time_start, time_end, meet_with, description, created_at) 
+               VALUES ('$room_id', '$user_id', '$date', '$division', '$start_time', '$end_time', '$meet_with', '$description', now())";
 
 if ($conn->query($sql_insert) === TRUE) {
     header("Location: book.php?status=success&message=" . urlencode('Your booking has been successfully made.'));

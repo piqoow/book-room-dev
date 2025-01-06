@@ -287,6 +287,30 @@ table tr:hover {
 .status.cancelled {
     background-color: hsl(9, 95%, 50%);
 }
+/* Button Styles */
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #006215;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #00ff00;
+    color: black;
+}
 
 /* Media Queries for Responsiveness */
 

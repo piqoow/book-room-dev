@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
         <?php endif; ?>
 
         <!-- Booking Form -->
-        <form action="book.php" method="POST">
+        <form action="" method="POST">
             <label for="room_id">Select Room:</label>
             <select name="room_id" required>
                 <option value="" disabled>--Unit H--</option>
@@ -146,7 +146,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
                     </option>
                 <?php endforeach; ?>
             </select>
-            
 
             <label for="date">Date:</label>
             <input type="date" name="date" required value="<?php echo htmlspecialchars($_POST['date'] ?? ''); ?>">
@@ -155,10 +154,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
         </form>
 
         <?php if (!empty($booked_slots)): ?>
+            <!-- Booking Form with Booked Slots -->
             <form action="book_now.php" method="POST">
                 <input type="hidden" name="room_id" value="<?php echo htmlspecialchars($_POST['room_id']); ?>">
                 <input type="hidden" name="date" value="<?php echo htmlspecialchars($_POST['date']); ?>">
-
                 <label for="meet_with">Meet With:</label>
                 <select id="meet_with" name="meet_with" required>
                     <option value="">--Select Item--</option>
@@ -211,8 +210,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
 
                 <button type="submit" class="btn-book">Book Now</button>
             </form>
-        <?php else: ?>
-            <!-- Jika tidak ada waktu yang dibooking, tampilkan seluruh slot waktu -->
+        <?php elseif ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
+            <!-- If no booked slots, show all time slots -->
             <form action="book_now.php" method="POST">
                 <input type="hidden" name="room_id" value="<?php echo htmlspecialchars($_POST['room_id']); ?>">
                 <input type="hidden" name="date" value="<?php echo htmlspecialchars($_POST['date']); ?>">

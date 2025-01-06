@@ -20,6 +20,8 @@ if (isset($_SESSION['email'])) {
 </head>
 <body>
     <div class="container">
+        <img src="assets/img/logo.svg" alt="Logo" class="logo"><br>
+        
         <h2>Welcome to the Meeting Room Booking System</h2>
         <div class="button-container">
             <a href="login.php" class="btn">Login</a>

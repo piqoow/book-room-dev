@@ -5,7 +5,7 @@ session_start();
 if (!isset($_SESSION['user_name'])) {
     header("Location: login.php");
     exit();
-}
+} 
 
 // Ambil username dan role dari session
 $username = $_SESSION['user_name'];

@@ -21,7 +21,10 @@ if (isset($_SESSION['email'])) {
 <body>
     <div class="container">
         <h2>Welcome to the Meeting Room Booking System</h2>
-        <center><a href="login.php">Login</a> | <a href="register.php">Register</a></center>
+        <div class="button-container">
+            <a href="login.php" class="btn">Login</a>
+            <a href="register.php" class="btn">Register</a>
+        </div>
     </div>
 </body>
 </html>

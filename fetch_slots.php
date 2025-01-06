@@ -9,7 +9,7 @@ $auto_confirm = "UPDATE bookings
 $conn->query($auto_confirm);
 
 $username = $_SESSION['user_name'];
-$role = $_SESSION['role'] ?? 'user';
+$role = $_SESSION['role'] ?? 'user'; 
 
 if ($role == 'admin' || $role == 'view') {
     $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 

@@ -1,8 +1,8 @@
 <?php
  // Start the session only once in this file
-$host = '110.0.100.70';
+$host = 'localhost';
 $user = 'root';
-$password = 'P@ssw0rdKu!23';
+$password = '';
 $database = 'meeting_room_system';
 
 // Create database connection

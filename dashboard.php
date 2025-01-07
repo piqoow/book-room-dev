@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_name'])) {
 $username = $_SESSION['user_name'];
 $rooms = $_SESSION['rooms'];
 $role = $_SESSION['role'] ?? 'user';
-
+$user_id = $_SESSION['user_id'];    
 
 // Koneksi ke database
 include 'config.php';
@@ -23,7 +23,7 @@ if ($role == 'admin') {
             JOIN rooms ON bookings.room_id = rooms.id 
             WHERE bookings.date >= CURDATE() ORDER BY bookings.date ASC";
 } elseif ($role == 'view') {
-    $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
+    $sql = "SELECT bookings.id, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
             WHERE bookings.date >= CURDATE() and rooms.name = '$rooms' ORDER BY bookings.date ASC";
@@ -31,7 +31,7 @@ if ($role == 'admin') {
     $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
-            WHERE bookings.date >= CURDATE() AND bookings.user_id = (SELECT id FROM users WHERE user_name = '$username')  ORDER BY bookings.date ASC";
+            WHERE bookings.date >= CURDATE() AND bookings.user_id = $user_id ORDER BY bookings.date ASC";
 }
 
 $result = $conn->query($sql);
@@ -78,7 +78,9 @@ $result = $conn->query($sql);
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Room Name</th>
+                        <?php if ($role != 'view') { ?>
+                            <th>Room Name</th>
+                        <?php } ?>
                         <th>Date</th>
                         <th>Division</th>
                         <th>Time</th>

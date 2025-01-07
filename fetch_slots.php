@@ -11,7 +11,7 @@ $conn->query($auto_confirm);
 $username = $_SESSION['user_name'];
 $role = $_SESSION['role'] ?? 'user'; 
 $rooms = $_SESSION['rooms'];
-
+$user_id = $_SESSION['user_id']; 
 
 if ($role == 'admin') {
     $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
@@ -19,7 +19,7 @@ if ($role == 'admin') {
             JOIN rooms ON bookings.room_id = rooms.id 
             WHERE bookings.date >= CURDATE() ORDER BY bookings.date ASC";
 } elseif ($role == 'view') {
-    $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
+    $sql = "SELECT bookings.id, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
             WHERE bookings.date >= CURDATE() and rooms.name = '$rooms' ORDER BY bookings.date ASC";
@@ -27,7 +27,7 @@ if ($role == 'admin') {
     $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
-            WHERE bookings.date >= CURDATE() AND bookings.user_id = (SELECT id FROM users WHERE user_name = '$username')  ORDER BY bookings.date ASC";
+            WHERE bookings.date >= CURDATE() AND bookings.user_id = '$user_id' ORDER BY bookings.date ASC";
 }
 
 $result = $conn->query($sql);
@@ -36,9 +36,11 @@ if ($result->num_rows > 0) {
     $counter = 1;
     while ($booking = $result->fetch_assoc()) {
         echo "<tr>
-                <td>{$counter}</td>
-                <td>{$booking['room_name']}</td>
-                <td>{$booking['date']}</td>
+                <td>{$counter}</td>";
+        if ($role != 'view') {
+            echo "<td>{$booking['room_name']}</td>";
+        }
+        echo "<td>{$booking['date']}</td>
                 <td>{$booking['divisi']}</td>
                 <td>{$booking['time_start']} - {$booking['time_end']}</td>
                 <td>{$booking['description']}</td>";

@@ -311,12 +311,6 @@ table tr:hover {
     background-color: #00ff00;
     color: black;
 }
-.logo {
-    display: block;
-    margin: 0 auto;
-    max-width: 150px; 
-    height: auto;
-}
 
 /* Media Queries for Responsiveness */
 

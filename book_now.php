@@ -47,7 +47,8 @@ $sql_check = "SELECT * FROM bookings
               AND date = '$date' 
               AND ((time_start < '$end_time' AND time_end > '$start_time') 
               OR (time_start >= '$start_time' AND time_start < '$end_time') 
-              OR (time_end > '$start_time' AND time_end <= '$end_time'))";
+              OR (time_end > '$start_time' AND time_end <= '$end_time'))
+              AND status != 'cancelled' AND status != 'confirmed'";
 
 $result_check = $conn->query($sql_check);
 

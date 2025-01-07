@@ -123,7 +123,6 @@ function isTimeSlotBooked($start_time, $end_time, $booked_slots) {
     <header>
         <div class="logo">Meeting Room System</div>
         <nav>
-            test
             <ul>
                 <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>

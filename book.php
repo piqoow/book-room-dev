@@ -79,6 +79,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
         }
     }
 }
+
+// Function to check if a time slot is booked
+function isTimeSlotBooked($start_time, $end_time, $booked_slots) {
+    foreach ($booked_slots as $slot) {
+        if (($start_time >= strtotime($slot['start']) && $start_time < strtotime($slot['end'])) ||
+            ($end_time > strtotime($slot['start']) && $end_time <= strtotime($slot['end'])) ||
+            ($start_time <= strtotime($slot['start']) && $end_time >= strtotime($slot['end']))) {
+            return true;
+        }
+    }
+    return false;
+}
 ?>
 
 <!DOCTYPE html>
@@ -173,14 +185,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
                     <option value="">--Select Start Time--</option>
                     <?php foreach ($time_slots as $time): ?>
                         <?php 
-                        $disabled = false;
-                        // Cek apakah waktu ini sudah diblokir
-                        foreach ($booked_slots as $slot) {
-                            if (strtotime($time) >= strtotime($slot['start']) && strtotime($time) < strtotime($slot['end'])) {
-                                $disabled = true;
-                                break;
-                            }
-                        }
+                        $start_time = strtotime($time);
+                        $end_time = strtotime('+30 minutes', $start_time);
+                        $disabled = isTimeSlotBooked($start_time, $end_time, $booked_slots);
                         ?>
                         <option value="<?php echo $time; ?>" <?php echo $disabled ? 'disabled' : ''; ?>>
                             <?php echo $time; ?> <?php echo $disabled ? '(Booked)' : ''; ?>
@@ -193,14 +200,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
                     <option value="">--Select End Time--</option>
                     <?php foreach ($time_slots as $time): ?>
                         <?php 
-                        $disabled = false;
-                        // Cek apakah waktu ini sudah diblokir
-                        foreach ($booked_slots as $slot) {
-                            if (strtotime($time) > strtotime($slot['start']) && strtotime($time) <= strtotime($slot['end'])) {
-                                $disabled = true;
-                                break;
-                            }
-                        }
+                        $start_time = strtotime('-30 minutes', strtotime($time));
+                        $end_time = strtotime($time);
+                        $disabled = isTimeSlotBooked($start_time, $end_time, $booked_slots);
                         ?>
                         <option value="<?php echo $time; ?>" <?php echo $disabled ? 'disabled' : ''; ?>>
                             <?php echo $time; ?> <?php echo $disabled ? '(Booked)' : ''; ?>

@@ -83,9 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'], $_POST['da
 // Function to check if a time slot is booked
 function isTimeSlotBooked($start_time, $end_time, $booked_slots) {
     foreach ($booked_slots as $slot) {
-        if (($start_time >= strtotime($slot['start']) && $start_time < strtotime($slot['end'])) ||
-            ($end_time > strtotime($slot['start']) && $end_time <= strtotime($slot['end'])) ||
-            ($start_time <= strtotime($slot['start']) && $end_time >= strtotime($slot['end']))) {
+        if (($start_time < strtotime($slot['end']) && $end_time > strtotime($slot['start']))) {
             return true;
         }
     }

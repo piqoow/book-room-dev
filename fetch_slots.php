@@ -10,12 +10,19 @@ $conn->query($auto_confirm);
 
 $username = $_SESSION['user_name'];
 $role = $_SESSION['role'] ?? 'user'; 
+$rooms = $_SESSION['rooms'];
 
-if ($role == 'admin' || $role == 'view') {
+
+if ($role == 'admin') {
     $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
             WHERE bookings.date >= CURDATE() ORDER BY bookings.date ASC";
+} elseif ($role == 'view') {
+    $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
+            FROM bookings 
+            JOIN rooms ON bookings.room_id = rooms.id 
+            WHERE bookings.date >= CURDATE() and rooms.name = '$rooms' ORDER BY bookings.date ASC";
 } else {
     $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 

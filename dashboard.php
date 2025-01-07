@@ -9,24 +9,29 @@ if (!isset($_SESSION['user_name'])) {
 
 // Ambil username dan role dari session
 $username = $_SESSION['user_name'];
-// $division = $_SESSION['division'];
+$rooms = $_SESSION['rooms'];
 $role = $_SESSION['role'] ?? 'user';
+
 
 // Koneksi ke database
 include 'config.php';
 
 // Query untuk mengambil daftar pemesanan berdasarkan role
-if ($role == 'admin' || $role == 'view') {
-    $sql = "SELECT bookings.id, rooms.name AS room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
+if ($role == 'admin') {
+    $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
-            WHERE bookings.date >= CURDATE()";
+            WHERE bookings.date >= CURDATE() ORDER BY bookings.date ASC";
+} elseif ($role == 'view') {
+    $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
+            FROM bookings 
+            JOIN rooms ON bookings.room_id = rooms.id 
+            WHERE bookings.date >= CURDATE() and rooms.name = '$rooms' ORDER BY bookings.date ASC";
 } else {
-    // Jika role user, hanya tampilkan data milik pengguna tersebut
-    $sql = "SELECT bookings.id, rooms.name AS room_name, bookings.date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
+    $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
-            WHERE bookings.date >= CURDATE() AND bookings.user_id = (SELECT id FROM users WHERE user_name = '$username')";
+            WHERE bookings.date >= CURDATE() AND bookings.user_id = (SELECT id FROM users WHERE user_name = '$username')  ORDER BY bookings.date ASC";
 }
 
 $result = $conn->query($sql);
@@ -60,8 +65,13 @@ $result = $conn->query($sql);
     </header>
     <!-- Main Content -->
     <div class="main-container">
-        <h1>Welcome, <span><?php echo htmlspecialchars($username); ?></span></h1>
-
+    <?php
+    if ($role == 'view') {
+        echo "<h1>Meeting Room <span>" . htmlspecialchars($rooms) . "</span></h1>"; 
+    } else {
+        echo "<h1>Welcome, <span>" . htmlspecialchars($username) . "</span></h1>";
+    }
+    ?>
         <div class="booking-section">
             <h2>Booking List</h2>
             <table>
@@ -106,7 +116,7 @@ $result = $conn->query($sql);
         <p>
             <strong>*</strong> Untuk konfirmasi pemesanan, silakan hubungi Admin melalui kontak di bawah ini.
         </p>
-        <p><strong>Anissa <a href="https://wa.me/6282110830527" target="_blank"> (+62 821-1083-0527)</a></strong></p>
+        <p><strong>Anissa  <a href="https://wa.me/6282110830527" target="_blank"> (+62 821-1083-0527)</a></strong></p>
         <p><strong>Laviana <a href="https://wa.me/628179679993" target="_blank"> (+62 817-9679-993)</a></strong></p>
     </div>
 

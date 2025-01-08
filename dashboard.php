@@ -50,9 +50,15 @@ $result = $conn->query($sql);
 <body>
     <!-- Header -->
     <header>
-        <div class="logo">Meeting Room System</div>
+        <div class="logo">
+            <img src="assets/img/logo.svg" alt="Logo" class="logop">
+        </div>
         <nav>
             <ul>
+            <div class="date-clock">
+                <div class="date" id="date"></div> 
+                <div class="date" id="clock"></div> 
+            </div>
                 <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
                 <?php 
                 if ($role != 'view') {
@@ -69,7 +75,7 @@ $result = $conn->query($sql);
     if ($role == 'view') {
         echo "<h1>Meeting Room <span>" . htmlspecialchars($rooms) . "</span></h1>"; 
     } else {
-        echo "<h1>Welcome, <span>" . htmlspecialchars($username) . "</span></h1>";
+        echo "<h1> <span>" . htmlspecialchars($username) . "</span></h1>";
     }
     ?>
         <div class="booking-section">
@@ -172,6 +178,23 @@ $result = $conn->query($sql);
                 }
             });
         });
+        // Function to update the clock and date
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const second = now.getSeconds().toString().padStart(2,'0');
+            const currentTime = `${hours}:${minutes}:${second}`;
+            document.getElementById('clock').textContent = currentTime;
+
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const currentDate = now.toLocaleDateString('en-US', options);
+            document.getElementById('date').textContent = currentDate;
+        }
+
+        // Update the clock every second
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call to set the clock immediately
     </script>
 
     <style>

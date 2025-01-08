@@ -45,8 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <header>
-        <div class="logo">Welcome to the Meeting Room Booking System</div>
-        
+        <div class="logo">
+            <img src="assets/img/logo.svg" alt="Logo" class="logop">
+        </div>
     </header>
 <body>
     <div class="container">

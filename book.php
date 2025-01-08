@@ -119,9 +119,15 @@ function isTimeSlotBooked($start_time, $end_time, $booked_slots) {
 <body>
     <!-- Header -->
     <header>
-        <div class="logo">Meeting Room System</div>
+        <div class="logo">
+            <img src="assets/img/logo.svg" alt="Logo" class="logop">
+        </div>
         <nav>
             <ul>
+            <div class="date-clock">
+                <div class="date" id="date"></div> 
+                <div class="date" id="clock"></div> 
+            </div>
                 <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
@@ -167,7 +173,7 @@ function isTimeSlotBooked($start_time, $end_time, $booked_slots) {
             <!-- Booking Form with Booked Slots -->
             <form action="book_now.php" method="POST">
                 <input type="hidden" name="room_id" value="<?php echo htmlspecialchars($_POST['room_id']); ?>">
-                <input type="hidden" name="date" value="<?php echo htmlspecialchars($_POST['date']); ?>">
+                <input type="hidden" name="date" value="<?php echo htmlspecialchars($_POST['date']); ?>"><br>
                 <label for="meet_with">Meet With:</label>
                 <select id="meet_with" name="meet_with" required>
                     <option value="">--Select Item--</option>
@@ -251,4 +257,23 @@ function isTimeSlotBooked($start_time, $end_time, $booked_slots) {
         <?php endif; ?>
     </div>
 </body>
+<SCript>
+    // Function to update the clock and date
+    function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const second = now.getSeconds().toString().padStart(2,'0');
+            const currentTime = `${hours}:${minutes}:${second}`;
+            document.getElementById('clock').textContent = currentTime;
+
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const currentDate = now.toLocaleDateString('en-US', options);
+            document.getElementById('date').textContent = currentDate;
+        }
+
+        // Update the clock every second
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call to set the clock immediately
+</SCript>
 </html>

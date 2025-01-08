@@ -19,6 +19,7 @@ if (isset($_SESSION['email'])) {
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+    test
     <div class="container">
         <h2>Welcome to the Meeting Room Booking System</h2>
         <div class="button-container">

@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,9 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <header>
-        <div class="logo">Welcome to the Meeting Room Booking System</div>
-        
-    </header>
+    <div class="logo">
+        <img src="assets/img/logo.svg" alt="Logo" class="logop">
+    </div>
+
+</header>
+
 <body>
     <div class="container">
         <h2>Register</h2>
@@ -73,12 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
 
             <label for="divisi">Division:</label>
-                <select name="divisi" id="divisi" required>
-                    <option value="">--Select Division--</option>
-                    <?php foreach ($division as $divisi): ?>
-                        <option value="<?php echo $divisi['name']; ?>"><?php echo htmlspecialchars($divisi['name']); ?></option>
-                    <?php endforeach; ?>
-                </select>
+            <select name="divisi" id="divisi" required>
+                <option value="">--Select Division--</option>
+                <?php foreach ($division as $divisi): ?>
+                    <option value="<?php echo $divisi['name']; ?>"><?php echo htmlspecialchars($divisi['name']); ?></option>
+                <?php endforeach; ?>
+            </select>
             <!-- Submit Button -->
             <button type="submit">Register</button>
         </form>
@@ -87,5 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <p>Sudah punya akun? <a href="login.php">Login di sini</a></p>
     </div>
 </body>
+
 </html>
 

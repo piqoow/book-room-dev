@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_name'])) {
 $username = $_SESSION['user_name'];
 $rooms = $_SESSION['rooms'];
 $role = $_SESSION['role'] ?? 'user';
-$user_id = $_SESSION['user_id'];    
+$user_id = $_SESSION['user_id'];
 
 // Koneksi ke database
 include 'config.php';
@@ -39,6 +39,7 @@ $result = $conn->query($sql);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,6 +48,7 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
     <!-- Header -->
     <header>
@@ -55,29 +57,36 @@ $result = $conn->query($sql);
         </div>
         <nav>
             <ul>
-            <div class="date-clock">
-                <div class="date" id="date"></div> 
-                <div class="date" id="clock"></div> 
-            </div>
+                <div class="date-clock">
+                    <div class="date" id="date"></div>
+                    <div class="date" id="clock"></div>
+                </div>
                 <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
-                <?php 
+                <?php
                 if ($role != 'view') {
                     echo "<li><a href='book.php'><i class='fas fa-calendar-plus'></i> Book Room</a></li>";
                 }
                 ?>
+                <?php
+                if ($role != 'view' && $role != 'user') {
+                    echo "<li><a href='chart.php'><i class='fas fa-chart-pie'></i> Chart</a></li>";
+                }
+                ?>
+
+
                 <li><a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>
     </header>
     <!-- Main Content -->
     <div class="main-container">
-    <?php
-    if ($role == 'view') {
-        echo "<h1>Meeting Room <span>" . htmlspecialchars($rooms) . "</span></h1>"; 
-    } else {
-        echo "<h1> <span>" . htmlspecialchars($username) . "</span></h1>";
-    }
-    ?>
+        <?php
+        if ($role == 'view') {
+            echo "<h1>Meeting Room <span>" . htmlspecialchars($rooms) . "</span></h1>";
+        } else {
+            echo "<h1> <span>" . htmlspecialchars($username) . "</span></h1>";
+        }
+        ?>
         <div class="booking-section">
             <h2>Booking List</h2>
             <table>
@@ -124,7 +133,7 @@ $result = $conn->query($sql);
         <p>
             <strong>*</strong> Untuk konfirmasi pemesanan, silakan hubungi Admin melalui kontak di bawah ini.
         </p>
-        <p><strong>Anissa  <a href="https://wa.me/6282110830527" target="_blank"> (+62 821-1083-0527)</a></strong></p>
+        <p><strong>Anissa <a href="https://wa.me/6282110830527" target="_blank"> (+62 821-1083-0527)</a></strong></p>
         <p><strong>Laviana <a href="https://wa.me/628179679993" target="_blank"> (+62 817-9679-993)</a></strong></p>
     </div>
 
@@ -135,10 +144,10 @@ $result = $conn->query($sql);
             $.ajax({
                 url: 'fetch_slots.php',
                 type: 'GET',
-                success: function (response) {
+                success: function(response) {
                     $('#bookingTable').html(response);
                 },
-                error: function () {
+                error: function() {
                     alert('Failed to load bookings.');
                 }
             });
@@ -161,19 +170,19 @@ $result = $conn->query($sql);
         }
 
         // Handle status update form submission
-        $('#updateStatusForm').on('submit', function (e) {
+        $('#updateStatusForm').on('submit', function(e) {
             e.preventDefault();
             const formData = $(this).serialize();
             $.ajax({
                 url: 'Update_status.php',
                 type: 'POST',
                 data: formData,
-                success: function (response) {
+                success: function(response) {
                     alert(response);
                     fetchBookings(); // Refresh booking list
                     closeModal();
                 },
-                error: function () {
+                error: function() {
                     alert('Failed to update status.');
                 }
             });
@@ -183,11 +192,16 @@ $result = $conn->query($sql);
             const now = new Date();
             const hours = now.getHours().toString().padStart(2, '0');
             const minutes = now.getMinutes().toString().padStart(2, '0');
-            const second = now.getSeconds().toString().padStart(2,'0');
+            const second = now.getSeconds().toString().padStart(2, '0');
             const currentTime = `${hours}:${minutes}:${second}`;
             document.getElementById('clock').textContent = currentTime;
 
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
             const currentDate = now.toLocaleDateString('en-US', options);
             document.getElementById('date').textContent = currentDate;
         }
@@ -240,4 +254,5 @@ $result = $conn->query($sql);
         }
     </style>
 </body>
+
 </html>

@@ -325,8 +325,8 @@ table tr:hover {
     display: flex;
     align-items: center;
     background: white;
-    padding: 8px;
-    margin-right: 100px ;
+    padding: 1px;
+    margin-right: 10px ;
     border-radius: 5px;
 }
 

@@ -57,10 +57,6 @@ $result = $conn->query($sql);
         </div>
         <nav>
             <ul>
-                <div class="date-clock">
-                    <div class="date" id="date"></div>
-                    <div class="date" id="clock"></div>
-                </div>
                 <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
                 <?php
                 if ($role != 'view') {
@@ -75,6 +71,10 @@ $result = $conn->query($sql);
 
 
                 <li><a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <div class="date-clock">
+                    <div class="date" id="date"></div>
+                    <div class="date" id="clock"></div>
+                </div>
             </ul>
         </nav>
     </header>

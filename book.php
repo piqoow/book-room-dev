@@ -124,12 +124,12 @@ function isTimeSlotBooked($start_time, $end_time, $booked_slots) {
         </div>
         <nav>
             <ul>
-            <div class="date-clock">
+                <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <div class="date-clock">
                 <div class="date" id="date"></div> 
                 <div class="date" id="clock"></div> 
             </div>
-                <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>
     </header>

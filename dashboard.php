@@ -53,7 +53,7 @@ $result = $conn->query($sql);
     <!-- Header -->
     <header>
         <div class="logo">
-            <img src="assets/img/logo.svg" alt="Logo" class="logop">
+            <img src="assets/img/cp.png" alt="Logo" class="logop">
         </div>
         <nav>
             <ul>
@@ -68,7 +68,6 @@ $result = $conn->query($sql);
                     echo "<li><a href='chart.php'><i class='fas fa-chart-pie'></i> Chart</a></li>";
                 }
                 ?>
-
 
                 <li><a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 <div class="date-clock">
@@ -92,7 +91,7 @@ $result = $conn->query($sql);
             <table>
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>No</th>
                         <?php if ($role != 'view') { ?>
                             <th>Room Name</th>
                         <?php } ?>

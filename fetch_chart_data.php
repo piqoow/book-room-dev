@@ -1,17 +1,57 @@
 <?php
 include 'config.php';
 
-// Fetch booking counts by time for all time
-$timeQuery = "SELECT DATE_FORMAT(time_start, '%H:%i') as time_slot, COUNT(*) as count 
-              FROM bookings 
-              GROUP BY time_slot 
-              ORDER BY time_slot";
-$timeResult = $conn->query($timeQuery);
+// Define colors for rooms
+$roomColors = [
+    'Centrepark 1' => ['rgba(255, 206, 86, 0.2)', 'rgba(255, 206, 86, 1)'],
+    'Centrepark 2' => ['rgba(54, 162, 235, 0.2)', 'rgba(54, 162, 235, 1)'],
+    'Alfabeta' => ['rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 1)'],
+    'Parkee' => ['rgba(153, 102, 255, 0.2)', 'rgba(153, 102, 255, 1)'],
+    'EV' => ['rgba(255, 159, 64, 0.2)', 'rgba(255, 159, 64, 1)'],
+    'Wuzz' => ['rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 1)']
+];
 
-$timeData = [];
-while ($row = $timeResult->fetch_assoc()) {
-    $timeData['labels'][] = $row['time_slot'];
-    $timeData['counts'][] = $row['count'];
+// Fetch booking counts by time and room
+$timeRoomQuery = "SELECT DATE_FORMAT(time_start, '%H:%i') as time_slot, rooms.name as room_name, COUNT(*) as count 
+                  FROM bookings 
+                  JOIN rooms ON bookings.room_id = rooms.id 
+                  GROUP BY time_slot, room_name 
+                  ORDER BY time_slot, room_name";
+$timeRoomResult = $conn->query($timeRoomQuery);
+
+$timeRoomData = [];
+$rooms = [];
+while ($row = $timeRoomResult->fetch_assoc()) {
+    $timeRoomData['labels'][] = $row['time_slot'];
+    if (!isset($rooms[$row['room_name']])) {
+        $rooms[$row['room_name']] = [];
+    }
+    $rooms[$row['room_name']][$row['time_slot']] = $row['count'];
+}
+
+// Fill missing time slots with 0 counts
+$uniqueLabels = array_unique($timeRoomData['labels']);
+foreach ($rooms as $room => $timeCounts) {
+    foreach ($uniqueLabels as $label) {
+        if (!isset($rooms[$room][$label])) {
+            $rooms[$room][$label] = 0;
+        }
+    }
+    // Sort by time slot
+    ksort($rooms[$room]);
+}
+
+// Prepare data for chart
+$labels = array_values($uniqueLabels);
+$datasets = [];
+foreach ($rooms as $room => $counts) {
+    $datasets[] = [
+        'label' => $room,
+        'data' => array_values($counts),
+        'backgroundColor' => $roomColors[$room][0],
+        'borderColor' => $roomColors[$room][1],
+        'borderWidth' => 1
+    ];
 }
 
 // Fetch booking counts by room for all time
@@ -25,10 +65,12 @@ $roomData = [];
 while ($row = $roomResult->fetch_assoc()) {
     $roomData['labels'][] = $row['name'];
     $roomData['counts'][] = $row['count'];
+    $roomData['backgroundColors'][] = $roomColors[$row['name']][0];
+    $roomData['borderColors'][] = $roomColors[$row['name']][1];
 }
 
 // Return data as JSON
-echo json_encode(['timeData' => $timeData, 'roomData' => $roomData]);
+echo json_encode(['timeRoomData' => ['labels' => $labels, 'datasets' => $datasets], 'roomData' => $roomData]);
 
 $conn->close();
 ?>

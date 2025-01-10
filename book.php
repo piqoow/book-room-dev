@@ -120,17 +120,17 @@ function isTimeSlotBooked($start_time, $end_time, $booked_slots) {
     <!-- Header -->
     <header>
         <div class="logo">
-            <img src="assets/img/logo.svg" alt="Logo" class="logop">
+            <img src="assets/img/cp.png" alt="Logo" class="logop">
         </div>
         <nav>
             <ul>
                 <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                <div class="date-clock">
-                <div class="date" id="date"></div> 
-                <div class="date" id="clock"></div> 
-            </div>
             </ul>
+            <div class="date-clock">
+                    <div class="date" id="date"></div>
+                    <div class="date" id="clock"></div>
+                </div>
         </nav>
     </header>
 
@@ -166,7 +166,7 @@ function isTimeSlotBooked($start_time, $end_time, $booked_slots) {
             <label for="date">Date:</label>
             <input type="date" name="date" required value="<?php echo htmlspecialchars($_POST['date'] ?? ''); ?>">
 
-            <button type="submit" class="btn-check">Check Availability</button>
+            <button type="submit" class="btn-check">Check Availability</button><br>
         </form>
 
         <?php if (!empty($booked_slots)): ?>

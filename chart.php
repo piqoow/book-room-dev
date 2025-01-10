@@ -54,14 +54,10 @@
         <!-- Header -->
         <header>
             <div class="logo">
-                <img src="assets/img/logo.svg" alt="Logo" class="logop">
+                <img src="assets/img/cp.png" alt="Logo" class="logop">
             </div>
             <nav>
                 <ul>
-                    <div class="date-clock">
-                        <div class="date" id="date"></div>
-                        <div class="date" id="clock"></div>
-                    </div>
                     <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
                     <?php
                     if ($role != 'view') {
@@ -73,9 +69,12 @@
                         echo "<li><a href='#'><i class='fas fa-chart-pie'></i> Chart</a></li>";
                     }
                     ?>
-
-
                     <li><a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+
+                    <div class="date-clock">
+                    <div class="date" id="date"></div>
+                    <div class="date" id="clock"></div>
+                </div>
                 </ul>
             </nav>
         </header>
@@ -89,147 +88,131 @@
             }
             ?>
             <!-- Charts Section -->
+             <h2>Chart</h2>
             <div class="charts-section">
-                <h2>Chart</h2>
                 <div id="chartContainer">
-                    <div>
+                    <div class="chart-item">
                         <canvas id="timeChart"></canvas>
                     </div>
-                    <div>
+                    <div class="dough-item">
                         <canvas id="roomChart"></canvas>
                     </div>
                 </div>
             </div>
-            <div class="main-container">
-                <p>
-                    <strong>*</strong> Untuk konfirmasi pemesanan, silakan hubungi Admin melalui kontak di bawah ini.
-                </p>
-                <p><strong>Anissa <a href="https://wa.me/6282110830527" target="_blank"> (+62 821-1083-0527)</a></strong></p>
-                <p><strong>Laviana <a href="https://wa.me/628179679993" target="_blank"> (+62 817-9679-993)</a></strong></p>
-            </div>
 
 
             <script>
-                // Fetch chart data
-                function fetchChartData() {
-                    $.ajax({
-                        url: 'fetch_chart_data.php',
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(data) {
-                            createTimeChart(data.timeData);
-                            createRoomChart(data.roomData);
-                        },
-                        error: function() {
-                            alert('Failed to load chart data.');
-                        }
-                    });
-                }
+            // Fetch chart data
+            function fetchChartData() {
+                $.ajax({
+                    url: 'fetch_chart_data.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log('Received data:', data); // Debug: Log received data
+                        createTimeChart(data.timeRoomData);
+                        createRoomChart(data.roomData);
+                    },
+                    error: function() {
+                        alert('Failed to load chart data.');
+                    }
+                });
+            }
 
-                // Create time chart
-                function createTimeChart(timeData) {
-                    const ctx = document.getElementById('timeChart').getContext('2d');
-                    new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: timeData.labels,
-                            datasets: [{
-                                label: 'Count of Bookings by Time',
-                                data: timeData.counts,
-                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                borderColor: 'rgba(54, 162, 235, 1)',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
+            // Create time chart
+            function createTimeChart(data) {
+                console.log('Creating time chart with data:', data); // Debug: Log data used for time chart
+                const ctx = document.getElementById('timeChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: data.datasets
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
                             }
                         }
-                    });
-                }
+                    }
+                });
+            }
 
-                // Create room chart
-                function createRoomChart(roomData) {
-                    const ctx = document.getElementById('roomChart').getContext('2d');
-                    new Chart(ctx, {
-                        type: 'pie',
-                        data: {
-                            labels: roomData.labels,
-                            datasets: [{
-                                label: 'Count of Bookings by Room',
-                                data: roomData.counts,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        }
-                    });
-                }
+            // Create room chart using Doughnut Chart
+            function createRoomChart(roomData) {
+                console.log('Creating room chart with data:', roomData); // Debug: Log data used for room chart
+                const ctx = document.getElementById('roomChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: roomData.labels,
+                        datasets: [{
+                            label: 'Count of Bookings by Room',
+                            data: roomData.counts,
+                            backgroundColor: roomData.backgroundColors,
+                            borderColor: roomData.borderColors,
+                            borderWidth: 1
+                        }]
+                    }
+                });
+            }
 
-                // Function to update the clock and date
-                function updateClock() {
-                    const now = new Date();
-                    const hours = now.getHours().toString().padStart(2, '0');
-                    const minutes = now.getMinutes().toString().padStart(2, '0');
-                    const second = now.getSeconds().toString().padStart(2, '0');
-                    const currentTime = `${hours}:${minutes}:${second}`;
-                    document.getElementById('clock').textContent = currentTime;
+            // Function to update the clock and date
+            function updateClock() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const currentTime = `${hours}:${minutes}:${seconds}`;
+                document.getElementById('clock').textContent = currentTime;
 
-                    const options = {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    };
-                    const currentDate = now.toLocaleDateString('en-US', options);
-                    document.getElementById('date').textContent = currentDate;
-                }
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                };
+                const currentDate = now.toLocaleDateString('en-US', options);
+                document.getElementById('date').textContent = currentDate;
+            }
 
-                // Update the clock every second
-                setInterval(updateClock, 1000);
-                updateClock(); // Initial call to set the clock immediately
+            // Update the clock every second
+            setInterval(updateClock, 1000);
+            updateClock(); // Initial call to set the clock immediately
 
-                // Initial call to fetch chart data
-                fetchChartData();
-            </script>
-            <style>
-                .charts-section {
-                    margin-top: 20px;
-                }
+            // Initial call to fetch chart data
+            fetchChartData();
+        </script>   
+        <style>
+        .charts-section {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
 
-                #chartContainer {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: space-around;
-                }
+        #chartContainer {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
 
-                #chartContainer>div {
-                    flex-basis: 45%;
-                    margin: 10px;
-                }
+        .chart-item {
+            flex: 1;
+            max-width: 50%; /* Mengatur ukuran maksimal untuk setiap chart */
+            margin: 10px;
+        }
+        .dough-item {
+            flex: 1;
+            max-width: 25%; /* Mengatur ukuran maksimal untuk setiap chart */
+            margin: 10px;
+        }
 
-                canvas {
-                    width: 100% !important;
-                    height: auto !important;
-                }
-            </style>
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
+    </style>
     </body>
 
     </html>

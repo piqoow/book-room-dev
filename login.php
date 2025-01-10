@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <header>
         <div class="logo">
-            <img src="assets/img/logo.svg" alt="Logo" class="logop">
+            <img src="assets/img/cp.png" alt="Logo" class="logop">
         </div>
     </header>
 <body>

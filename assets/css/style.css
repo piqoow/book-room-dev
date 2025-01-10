@@ -180,7 +180,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #004c80;
+    background-color: #fbbc01; /* Mengubah warna latar belakang navbar */
     color: #fff;
     padding: 15px 20px;
 }
@@ -193,17 +193,25 @@ header .logo {
 header nav ul {
     list-style: none;
     display: flex;
+    align-items: center;
+    margin: 0; 
+    padding: 0; 
 }
 
 header nav ul li {
     margin: 0 10px;
+    display: flex;
+    align-items: center;
 }
 
 header nav ul li a {
     color: #fff;
     text-decoration: none;
     font-size: 1em;
+    display: flex;
+    align-items: center;
 }
+
 
 header nav ul li a:hover {
     text-decoration: underline;
@@ -223,7 +231,7 @@ header nav ul li a:hover {
 /* Main Container */
 .main-container {
     width: 90%;
-    margin: 20px auto;
+    margin: 40px auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
@@ -289,6 +297,7 @@ table tr:hover {
 .status.cancelled {
     background-color: hsl(9, 95%, 50%);
 }
+
 /* Button Styles */
 .button-container {
     text-align: center;
@@ -313,30 +322,33 @@ table tr:hover {
     background-color: #004c80;
     color: white;
 }
+
 .logop {
     display: block;
     margin: 0 auto;
-    background-color: white;
+    background-color: transparent; /* Menghilangkan latar belakang putih */
     width: 150px; /* adjust the width as needed */
     height: auto; /* maintain aspect ratio */
 }
- /* Date and Clock styles */
- .date-clock {
+
+/* Date and Clock styles */
+.date-clock {
     display: flex;
+    flex-direction: column; /* Mengubah arah flexbox ke kolom */
     align-items: center;
     background: white;
-    padding: 1px;
-    margin-right: 10px ;
+    padding: 5px 10px;
     border-radius: 5px;
+    top: 10px; /* Jarak dari atas */
+    right: 10px; /* Jarak dari kanan */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan */
 }
 
-.date,.clock {
+.date, .clock {
     font-size: 18px;
     font-weight: bold;
     color: #004c80;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-right: 10px;
+    margin-bottom: 5px; /* Jarak antara tanggal dan jam */
 }
 
 .date:last-child {
@@ -382,6 +394,11 @@ table tr:hover {
         padding: 10px;
         flex-direction: column;
         align-items: center;
+    }
+
+    .date-clock {
+        top: 5px; /* Sesuaikan jarak dari atas untuk perangkat kecil */
+        right: 5px; /* Sesuaikan jarak dari kanan untuk perangkat kecil */
     }
 
     table {

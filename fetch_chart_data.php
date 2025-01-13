@@ -1,6 +1,10 @@
 <?php
 include 'config.php';
 
+// Get start and end dates from request
+$startDate = isset($_GET['startDate']) ? $_GET['startDate'] : '';
+$endDate = isset($_GET['endDate']) ? $_GET['endDate'] : '';
+
 // Define colors for rooms
 $roomColors = [
     'Centrepark 1' => ['rgba(255, 206, 86, 0.2)', 'rgba(255, 206, 86, 1)'],
@@ -11,10 +15,17 @@ $roomColors = [
     'Wuzz' => ['rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 1)']
 ];
 
+// Define date range condition
+$dateCondition = "";
+if ($startDate && $endDate) {
+    $dateCondition = "AND bookings.date BETWEEN '$startDate' AND '$endDate'";
+}
+
 // Fetch booking counts by time and room
 $timeRoomQuery = "SELECT DATE_FORMAT(time_start, '%H:%i') as time_slot, rooms.name as room_name, COUNT(*) as count 
                   FROM bookings 
                   JOIN rooms ON bookings.room_id = rooms.id 
+                  WHERE 1=1 $dateCondition
                   GROUP BY time_slot, room_name 
                   ORDER BY time_slot, room_name";
 $timeRoomResult = $conn->query($timeRoomQuery);
@@ -64,6 +75,7 @@ foreach ($rooms as $room => $counts) {
 $roomQuery = "SELECT rooms.name, COUNT(*) as count 
               FROM bookings 
               JOIN rooms ON bookings.room_id = rooms.id 
+              WHERE 1=1 $dateCondition
               GROUP BY rooms.name";
 $roomResult = $conn->query($roomQuery);
 

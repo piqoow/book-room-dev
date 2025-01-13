@@ -26,7 +26,7 @@ if ($role == 'admin') {
     $sql = "SELECT bookings.id, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.id 
-            WHERE bookings.date >= CURDATE() and rooms.name = '$rooms' ORDER BY bookings.date ASC";
+            WHERE bookings.date >= CURDATE() AND rooms.name = '$rooms' AND bookings.status IN ('confirmed', 'pending') ORDER BY bookings.date ASC"; // Updated query
 } else {
     $sql = "SELECT bookings.id, rooms.name AS room_name, DATE_FORMAT(bookings.date, '%d %M %Y') as date, bookings.divisi, bookings.time_start, bookings.time_end, bookings.description, bookings.status 
             FROM bookings 

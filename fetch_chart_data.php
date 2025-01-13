@@ -21,12 +21,18 @@ $timeRoomResult = $conn->query($timeRoomQuery);
 
 $timeRoomData = [];
 $rooms = [];
+$timeSlotCounts = [];
 while ($row = $timeRoomResult->fetch_assoc()) {
     $timeRoomData['labels'][] = $row['time_slot'];
     if (!isset($rooms[$row['room_name']])) {
         $rooms[$row['room_name']] = [];
     }
     $rooms[$row['room_name']][$row['time_slot']] = $row['count'];
+    
+    if (!isset($timeSlotCounts[$row['time_slot']])) {
+        $timeSlotCounts[$row['time_slot']] = 0;
+    }
+    $timeSlotCounts[$row['time_slot']] += $row['count'];
 }
 
 // Fill missing time slots with 0 counts
@@ -62,15 +68,22 @@ $roomQuery = "SELECT rooms.name, COUNT(*) as count
 $roomResult = $conn->query($roomQuery);
 
 $roomData = [];
+$roomCounts = [];
 while ($row = $roomResult->fetch_assoc()) {
     $roomData['labels'][] = $row['name'];
     $roomData['counts'][] = $row['count'];
     $roomData['backgroundColors'][] = $roomColors[$row['name']][0];
     $roomData['borderColors'][] = $roomColors[$row['name']][1];
+    
+    $roomCounts[$row['name']] = $row['count'];
 }
 
+// Determine the most frequently used room and time slot
+$mostUsedRoom = array_keys($roomCounts, max($roomCounts))[0];
+$mostUsedTimeSlot = array_keys($timeSlotCounts, max($timeSlotCounts))[0];
+
 // Return data as JSON
-echo json_encode(['timeRoomData' => ['labels' => $labels, 'datasets' => $datasets], 'roomData' => $roomData]);
+echo json_encode(['timeRoomData' => ['labels' => $labels, 'datasets' => $datasets], 'roomData' => $roomData, 'summary' => ['mostUsedRoom' => $mostUsedRoom, 'mostUsedTimeSlot' => $mostUsedTimeSlot]]);
 
 $conn->close();
 ?>

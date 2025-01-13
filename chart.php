@@ -72,9 +72,9 @@
                     <li><a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
 
                     <div class="date-clock">
-                    <div class="date" id="date"></div>
-                    <div class="date" id="clock"></div>
-                </div>
+                        <div class="date" id="date"></div>
+                        <div class="date" id="clock"></div>
+                    </div>
                 </ul>
             </nav>
         </header>
@@ -88,7 +88,7 @@
             }
             ?>
             <!-- Charts Section -->
-             <h2>Chart</h2>
+            <h2>Chart</h2>
             <div class="charts-section">
                 <div id="chartContainer">
                     <div class="chart-item">
@@ -99,120 +99,136 @@
                     </div>
                 </div>
             </div>
-
-
+            <!-- Summary Section -->
+            <div id="summary" class="summary-section">
+                <!-- Summary content will be added here by JavaScript -->
+            </div>
             <script>
-            // Fetch chart data
-            function fetchChartData() {
-                $.ajax({
-                    url: 'fetch_chart_data.php',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        console.log('Received data:', data); // Debug: Log received data
-                        createTimeChart(data.timeRoomData);
-                        createRoomChart(data.roomData);
-                    },
-                    error: function() {
-                        alert('Failed to load chart data.');
-                    }
-                });
-            }
+                // Fetch chart data
+                function fetchChartData() {
+                    $.ajax({
+                        url: 'fetch_chart_data.php',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            console.log('Received data:', data); // Debug: Log received data
+                            createTimeChart(data.timeRoomData);
+                            createRoomChart(data.roomData);
+                            displaySummary(data.summary);
+                        },
+                        error: function() {
+                            alert('Failed to load chart data.');
+                        }
+                    });
+                }
 
-            // Create time chart
-            function createTimeChart(data) {
-                console.log('Creating time chart with data:', data); // Debug: Log data used for time chart
-                const ctx = document.getElementById('timeChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: data.labels,
-                        datasets: data.datasets
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
+                // Create time chart
+                function createTimeChart(data) {
+                    console.log('Creating time chart with data:', data); // Debug: Log data used for time chart
+                    const ctx = document.getElementById('timeChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: data.datasets
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
                             }
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            // Create room chart using Doughnut Chart
-            function createRoomChart(roomData) {
-                console.log('Creating room chart with data:', roomData); // Debug: Log data used for room chart
-                const ctx = document.getElementById('roomChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: roomData.labels,
-                        datasets: [{
-                            label: 'Count of Bookings by Room',
-                            data: roomData.counts,
-                            backgroundColor: roomData.backgroundColors,
-                            borderColor: roomData.borderColors,
-                            borderWidth: 1
-                        }]
-                    }
-                });
-            }
+                // Create room chart using Doughnut Chart
+                function createRoomChart(roomData) {
+                    console.log('Creating room chart with data:', roomData); // Debug: Log data used for room chart
+                    const ctx = document.getElementById('roomChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: roomData.labels,
+                            datasets: [{
+                                label: 'Count of Bookings by Room',
+                                data: roomData.counts,
+                                backgroundColor: roomData.backgroundColors,
+                                borderColor: roomData.borderColors,
+                                borderWidth: 1
+                            }]
+                        }
+                    });
+                }
 
-            // Function to update the clock and date
-            function updateClock() {
-                const now = new Date();
-                const hours = now.getHours().toString().padStart(2, '0');
-                const minutes = now.getMinutes().toString().padStart(2, '0');
-                const seconds = now.getSeconds().toString().padStart(2, '0');
-                const currentTime = `${hours}:${minutes}:${seconds}`;
-                document.getElementById('clock').textContent = currentTime;
+                // Display summary data
+                function displaySummary(summary) {
+                    const summarySection = document.getElementById('summary');
+                    summarySection.innerHTML = `
+                    <h3>Summary</h3>
+                    <p><strong>Ruangan Yang Sering Digunakan:</strong> ${summary.mostUsedRoom}</p>
+                    <p><strong>Waktu Yang Sering Digunakan:</strong> ${summary.mostUsedTimeSlot}</p>
+                `;
+                }
 
-                const options = {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                };
-                const currentDate = now.toLocaleDateString('en-US', options);
-                document.getElementById('date').textContent = currentDate;
-            }
+                // Function to update the clock and date
+                function updateClock() {
+                    const now = new Date();
+                    const hours = now.getHours().toString().padStart(2, '0');
+                    const minutes = now.getMinutes().toString().padStart(2, '0');
+                    const seconds = now.getSeconds().toString().padStart(2, '0');
+                    const currentTime = `${hours}:${minutes}:${seconds}`;
+                    document.getElementById('clock').textContent = currentTime;
 
-            // Update the clock every second
-            setInterval(updateClock, 1000);
-            updateClock(); // Initial call to set the clock immediately
+                    const options = {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    };
+                    const currentDate = now.toLocaleDateString('en-US', options);
+                    document.getElementById('date').textContent = currentDate;
+                }
 
-            // Initial call to fetch chart data
-            fetchChartData();
-        </script>   
-        <style>
-        .charts-section {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
+                // Update the clock every second
+                setInterval(updateClock, 1000);
+                updateClock(); // Initial call to set the clock immediately
 
-        #chartContainer {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-        }
+                // Initial call to fetch chart data
+                fetchChartData();
+            </script>
+            <style>
+                .charts-section {
+                    margin-top: 20px;
+                    display: flex;
+                    justify-content: space-between;
+                }
 
-        .chart-item {
-            flex: 1;
-            max-width: 50%; /* Mengatur ukuran maksimal untuk setiap chart */
-            margin: 10px;
-        }
-        .dough-item {
-            flex: 1;
-            max-width: 25%; /* Mengatur ukuran maksimal untuk setiap chart */
-            margin: 10px;
-        }
+                #chartContainer {
+                    display: flex;
+                    justify-content: space-around;
+                    width: 100%;
+                }
 
-        canvas {
-            width: 100% !important;
-            height: auto !important;
-        }
-    </style>
+                .chart-item {
+                    flex: 1;
+                    max-width: 50%;
+                    /* Mengatur ukuran maksimal untuk setiap chart */
+                    margin: 10px;
+                }
+
+                .dough-item {
+                    flex: 1;
+                    max-width: 25%;
+                    /* Mengatur ukuran maksimal untuk setiap chart */
+                    margin: 10px;
+                }
+
+                canvas {
+                    width: 100% !important;
+                    height: auto !important;
+                }
+            </style>
     </body>
 
     </html>

@@ -53,6 +53,7 @@ foreach ($rooms as $room => $timeCounts) {
         if (!isset($rooms[$room][$label])) {
             $rooms[$room][$label] = 0;
         }
+        
     }
     // Sort by time slot
     ksort($rooms[$room]);
@@ -89,13 +90,32 @@ while ($row = $roomResult->fetch_assoc()) {
     
     $roomCounts[$row['name']] = $row['count'];
 }
+if (empty($labels) && empty($roomData['labels'])) {
+    echo json_encode([
+        'timeRoomData' => ['labels' => [], 'datasets' => []],
+        'roomData' => ['labels' => [], 'counts' => [], 'backgroundColors' => [], 'borderColors' => []],
+        'summary' => ['mostUsedRoom' => null, 'mostUsedTimeSlot' => null]
+    ]);
+    exit();
+}
+
 
 // Determine the most frequently used room and time slot
-$mostUsedRoom = array_keys($roomCounts, max($roomCounts))[0];
-$mostUsedTimeSlot = array_keys($timeSlotCounts, max($timeSlotCounts))[0];
+$mostUsedRoom = count($roomCounts) ? array_keys($roomCounts, max($roomCounts))[0] : '';
+$mostUsedTimeSlot = count($timeSlotCounts) ? array_keys($timeSlotCounts, max($timeSlotCounts))[0] : '';
 
 // Return data as JSON
-echo json_encode(['timeRoomData' => ['labels' => $labels, 'datasets' => $datasets], 'roomData' => $roomData, 'summary' => ['mostUsedRoom' => $mostUsedRoom, 'mostUsedTimeSlot' => $mostUsedTimeSlot]]);
+echo json_encode([
+    'timeRoomData' => [
+        'labels' => $labels, 
+        'datasets' => $datasets
+    ], 
+    'roomData' => $roomData, 
+    'summary' => [
+        'mostUsedRoom' => $mostUsedRoom, 
+        'mostUsedTimeSlot' => $mostUsedTimeSlot
+    ]
+]);
 
 $conn->close();
 ?>

@@ -92,7 +92,6 @@ $result = $conn->query($sql);
             <button onclick="refreshPage()">All Time</button>
         </div>
 
-
         <!-- Charts Section -->
         <h2>Chart</h2>
         <div class="charts-section">
@@ -115,7 +114,6 @@ $result = $conn->query($sql);
             var timeChartInstance = null;
             var roomChartInstance = null;
 
-            // Fetch chart data with optional date range
             function fetchChartData(startDate = '', endDate = '') {
                 $.ajax({
                     url: 'fetch_chart_data.php',
@@ -126,13 +124,59 @@ $result = $conn->query($sql);
                         endDate: endDate
                     },
                     success: function(data) {
-                        console.log('Received data:', data); // Debug: Log received data
+                        console.log('Received data:', data);
+
+                        // Destroy the old charts if they exist
+                        if (timeChartInstance) {
+                            timeChartInstance.destroy();
+                            timeChartInstance = null; // Reset instance
+                        }
+                        if (roomChartInstance) {
+                            roomChartInstance.destroy();
+                            roomChartInstance = null; // Reset instance
+                        }
+
+                        // If no data, display message and clear summary
+                        if (data.timeRoomData.labels.length === 0 && data.roomData.labels.length === 0) {
+                            document.getElementById('chartContainer').innerHTML = `
+                                <p style="text-align: center; font-weight: bold; font-size: 18px;">No Data Available</p>`;
+                            document.getElementById('summary').innerHTML = ''; // Clear summary section
+                            return; // Stop further processing
+                        }
+
+                        // Ensure chart container is reset
+                        document.getElementById('chartContainer').innerHTML = `
+                            <div class="chart-item">
+                                <canvas id="timeChart"></canvas>
+                            </div>
+                            <div class="dough-item">
+                                <canvas id="roomChart"></canvas>
+                            </div>`;
+
+                        // Show charts and update them
                         createTimeChart(data.timeRoomData);
-                        createRoomChart(data.roomData);
+                        if (data.roomData.labels.length !== 0) {
+                            createRoomChart(data.roomData);
+                        }
                         displaySummary(data.summary);
                     },
-                    error: function() {
-                        alert('Failed to load chart data.');
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching chart data:', error);
+
+                        // Destroy any existing charts if AJAX fails
+                        if (timeChartInstance) {
+                            timeChartInstance.destroy();
+                            timeChartInstance = null;
+                        }
+                        if (roomChartInstance) {
+                            roomChartInstance.destroy();
+                            roomChartInstance = null;
+                        }
+
+                        // Remove chart content and show error message
+                        document.getElementById('chartContainer').innerHTML = `
+                            <p style="text-align: center; font-weight: bold; font-size: 18px;">Tidak ada data Bookings di rentang tanggal ini.</p>`;
+                        document.getElementById('summary').innerHTML = ''; // Clear summary section
                     }
                 });
             }
@@ -143,6 +187,7 @@ $result = $conn->query($sql);
                 const endDate = document.getElementById('endDate').value;
                 fetchChartData(startDate, endDate);
             }
+
             // Refresh page to initial state
             function refreshPage() {
                 fetchChartData(); // Call fetchChartData without parameters to reset to initial state
@@ -154,11 +199,6 @@ $result = $conn->query($sql);
             function createTimeChart(data) {
                 console.log('Creating time chart with data:', data); // Debug: Log data used for time chart
                 const ctx = document.getElementById('timeChart').getContext('2d');
-
-                // Destroy the old chart if it exists
-                if (timeChartInstance) {
-                    timeChartInstance.destroy();
-                }
 
                 timeChartInstance = new Chart(ctx, {
                     type: 'bar',
@@ -181,11 +221,6 @@ $result = $conn->query($sql);
                 console.log('Creating room chart with data:', roomData); // Debug: Log data used for room chart
                 const ctx = document.getElementById('roomChart').getContext('2d');
 
-                // Destroy the old chart if it exists
-                if (roomChartInstance) {
-                    roomChartInstance.destroy();
-                }
-
                 roomChartInstance = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
@@ -206,8 +241,8 @@ $result = $conn->query($sql);
                 const summarySection = document.getElementById('summary');
                 summarySection.innerHTML = `
                     <h3>Summary</h3>
-                    <p><strong>Ruangan Yang Sering Digunakan:</strong> ${summary.mostUsedRoom}</p>
-                    <p><strong>Waktu Yang Sering Digunakan:</strong> ${summary.mostUsedTimeSlot}</p>
+                    <p><strong>Ruangan Yang Sering Digunakan:</strong> ${summary.mostUsedRoom ? summary.mostUsedRoom : 'N/A'}</p>
+                    <p><strong>Waktu Yang Sering Digunakan:</strong> ${summary.mostUsedTimeSlot ? summary.mostUsedTimeSlot : 'N/A'}</p>
                 `;
             }
 

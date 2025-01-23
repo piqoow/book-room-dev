@@ -48,6 +48,7 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 </head>
 
 <body>
@@ -195,7 +196,6 @@ $result = $conn->query($sql);
                 document.getElementById('endDate').value = ''; // Clear end date input
             }
 
-            // Create time chart
             function createTimeChart(data) {
                 console.log('Creating time chart with data:', data); // Debug: Log data used for time chart
                 const ctx = document.getElementById('timeChart').getContext('2d');
@@ -210,9 +210,39 @@ $result = $conn->query($sql);
                         scales: {
                             y: {
                                 beginAtZero: true
+                            },
+                            x: {
+                                ticks: {
+                                    maxRotation: 90,
+                                    minRotation: 45
+                                }
+                            }
+                        },
+                        plugins: {
+                            datalabels: {
+                                display: true,
+                                color: 'white',
+                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                borderRadius: 3,
+                                font: {
+                                    size: 10 // Adjust the font size to make labels smaller
+                                },
+                                anchor: 'end',
+                                align: 'center',
+                                offset: 6, // Add offset to move the labels away from the bars
+                                clamp: true, // Ensure labels do not go outside the chart area
+                                formatter: function(value, context) {
+                                    if (value === 0) {
+                                        return null; // Do not display labels for data points with a value of 0
+                                    }
+                                    // Construct the label with the desired format
+                                    const time = context.chart.data.labels[context.dataIndex];
+                                    return `${value}x`;
+                                }
                             }
                         }
-                    }
+                    },
+                    plugins: [ChartDataLabels]
                 });
             }
 
@@ -221,6 +251,10 @@ $result = $conn->query($sql);
                 console.log('Creating room chart with data:', roomData); // Debug: Log data used for room chart
                 const ctx = document.getElementById('roomChart').getContext('2d');
 
+                // Calculate the total number of bookings displayed in the chart
+                const totalDisplayedBookings = roomData.counts.reduce((sum, count) => sum + count, 0);
+
+                // Create the doughnut chart
                 roomChartInstance = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
@@ -232,7 +266,27 @@ $result = $conn->query($sql);
                             borderColor: roomData.borderColors,
                             borderWidth: 1
                         }]
-                    }
+                    },
+                    options: {
+                        plugins: {
+                            datalabels: {
+                                display: true,
+                                color: 'white',
+                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                borderRadius: 3,
+                                formatter: function(value, context) {
+                                    if (value === 0) {
+                                        return null; // Do not display labels for data points with a value of 0
+                                    }
+                                    // Calculate the percentage for each data point based on the total displayed bookings
+                                    let percentage = (value / totalDisplayedBookings * 100).toFixed(1);
+                                    // Return the percentage string
+                                    return `${percentage}%`;
+                                }
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
                 });
             }
 

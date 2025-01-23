@@ -341,14 +341,13 @@ table tr:hover {
     border-radius: 5px;
     top: 10px; /* Jarak dari atas */
     right: 10px; /* Jarak dari kanan */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan */
 }
 
 .date, .clock {
     font-size: 18px;
     font-weight: bold;
     color: #004c80;
-    margin-bottom: 5px; /* Jarak antara tanggal dan jam */
+    margin-bottom: 30px; /* Jarak antara tanggal dan jam */
 }
 
 .date:last-child {

@@ -7,15 +7,15 @@ $endDate = isset($_GET['endDate']) ? $_GET['endDate'] : '';
 
 // Define colors for rooms
 $roomColors = [
-    'Centrepark 1' => ['rgba(255, 206, 86, 0.2)', 'rgba(255, 206, 86, 1)'],
-    'Centrepark 2' => ['rgba(54, 162, 235, 0.2)', 'rgba(54, 162, 235, 1)'],
-    'Alfabeta' => ['rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 1)'],
-    'Parkee' => ['rgba(153, 102, 255, 0.2)', 'rgba(153, 102, 255, 1)'],
-    'EV' => ['rgba(255, 159, 64, 0.2)', 'rgba(255, 159, 64, 1)'],
-    'Wuzz' => ['rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 1)']
+    'Centrepark 1' => ['rgba(0, 34, 255, 0.65)', 'rgb(0, 0, 0)'],
+    'Centrepark 2' => ['rgba(54, 162, 235, 0.2)', 'rgba(0, 0, 0, 0)'],
+    'Alfabeta' => ['rgb(255, 238, 0)', 'rgb(0, 0, 0)'],
+    'Parkee' => ['rgba(255, 0, 0, 0.8)', 'rgb(0, 0, 0)'],
+    'EV' => ['rgba(255, 159, 64, 0.2)', 'rgb(0, 0, 0)'],
+    'Wuzz' => ['rgba(255, 99, 132, 0.2)', 'rgb(0, 0, 0)']
 ];
 
-// Define date range condition
+// Define date range condition  
 $dateCondition = "";
 if ($startDate && $endDate) {
     $dateCondition = "AND bookings.date BETWEEN '$startDate' AND '$endDate'";
